@@ -59,10 +59,12 @@ const get_directory = async (
   { req }
 ) => {
   console.log({ body });
-  const fileNms = await fs.readdir(base_server_dir);
+  const safeDir = path.normalize(body.dir).replace(/^(\.\.(\/|\\|$))+/, "");
+  const dir = path.join(base_server_dir, safeDir);
+  const fileNms = await fs.readdir(dir);
   const files = [];
   for (const name of fileNms) {
-    const stat = await fs.stat(path.join(base_server_dir, name));
+    const stat = await fs.stat(path.join(dir, name));
     files.push({
       name,
       isDirectory: stat.isDirectory(),

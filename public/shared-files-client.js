@@ -1,9 +1,20 @@
+function icon(name, isDirectory) {
+  if (isDirectory) return `<i class="fas fa-folder"></i>`;
+
+  if (name.endsWith(".csv")) return `<i class="fas fa-file-csv"></i>`;
+  return `<i class="fas fa-file"></i>`;
+}
+
 function file_row({ name, size, ctime, isDirectory }) {
-  return `<tr><td>${name}</td><td>${ctime}</td><td>${size}</td></tr>`;
+  return `<tr><td>${icon(
+    name,
+    isDirectory
+  )}</td><td>${name}</td><td>${ctime}</td><td>${size}</td></tr>`;
 }
 function draw_shared_files(e, dir) {
   e.html(`<table><thead>
   <tr>
+      <th scope="col"></th>
       <th scope="col">Name</th>
       <th scope="col">Date</th>
       <th scope="col">Size</th>
