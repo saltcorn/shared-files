@@ -52,7 +52,13 @@ const run = async (
 
   return (
     div({ id: rndid }) +
-    script(domReady(`switch_to_dir("${rndid}", "${viewname}", "/")`)) +
+    script(
+      domReady(
+        `switch_to_dir("${rndid}", "${viewname}", "/", "${
+          req.query._select || ""
+        }")`
+      )
+    ) +
     style(`#${rndid} td a {width: 100%;display: block;}`)
   );
 };
@@ -64,7 +70,7 @@ const get_directory = async (
   body,
   { req }
 ) => {
-  console.log({ body });
+  const _select = body._select;
   const safeDir = path.normalize(body.dir).replace(/^(\.\.(\/|\\|$))+/, "");
   const dir = path.join(base_server_dir, safeDir);
   const fileNms = await fs.readdir(dir);
@@ -92,7 +98,12 @@ const get_directory = async (
         ? `javascript:switch_to_dir('${body.id}', '${viewname}', '${path.join(
             safeDir,
             name
-          )}');`
+          )}', '${_select}');`
+        : _select
+        ? `javascript:select_shared_link('${path.join(
+            safeDir,
+            name
+          )}', '${_select}');`
         : path.join(file_url_prefix, safeDir, name),
     });
   }

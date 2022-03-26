@@ -21,12 +21,18 @@ function draw_shared_files(e, dir) {
     </thead><tbody>${dir.map(file_row).join("")}</tbody></table>`);
 }
 
-function switch_to_dir(id, viewname, dir) {
-  view_post(viewname, "get_directory", { dir, id }, (res) => {
+function switch_to_dir(id, viewname, dir, _select) {
+  view_post(viewname, "get_directory", { dir, id, _select }, (res) => {
     draw_shared_files($("#" + id), res.success || []);
   });
 }
 
 function sharedLinkSelect(nm, viewname) {
   ajax_modal(`/view/${viewname}?_select=${nm}`);
+}
+function select_shared_link(val, nm) {
+  $(`#input${nm}`).val(val);
+  var myModalEl = document.getElementById("scmodal");
+  var modal = bootstrap.Modal.getInstance(myModalEl);
+  modal.hide();
 }
