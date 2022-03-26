@@ -29,6 +29,11 @@ const configuration_workflow = () =>
                 type: "String",
                 required: true,
               },
+              {
+                name: "show_hidden",
+                label: "Show hidden files",
+                type: "Bool",
+              },
             ],
           });
         },
@@ -54,7 +59,7 @@ const run = async (
 const get_directory = async (
   table_id,
   viewname,
-  { base_server_dir, file_url_prefix },
+  { base_server_dir, file_url_prefix, show_hidden },
   body,
   { req }
 ) => {
@@ -63,7 +68,18 @@ const get_directory = async (
   const dir = path.join(base_server_dir, safeDir);
   const fileNms = await fs.readdir(dir);
   const files = [];
+  if (safeDir !== "/")
+    files.push({
+      name: "..",
+      isDirectory: true,
+      size: 0,
+      ctime: "",
+      link: `javascript:switch_to_dir('${
+        body.id
+      }', '${viewname}', '/${path.join(safeDir, "..")}');`,
+    });
   for (const name of fileNms) {
+    if (name.startsWith(".") && !show_hidden) continue;
     const stat = await fs.stat(path.join(dir, name));
     const isDirectory = stat.isDirectory();
     files.push({
