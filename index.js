@@ -7,4 +7,5 @@ module.exports = {
       script: "/plugins/public/shared-files/shared-files-client.js",
     },
   ],
+  types: [require("./link-type.js")],
 };
