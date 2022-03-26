@@ -26,3 +26,7 @@ function switch_to_dir(id, viewname, dir) {
     draw_shared_files($("#" + id), res.success || []);
   });
 }
+
+function sharedLinkSelect(nm, viewname) {
+  ajax_modal(`/view/${viewname}?_select=${nm}`);
+}

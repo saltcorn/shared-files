@@ -1,6 +1,14 @@
 const View = require("@saltcorn/data/models/view");
 const { getState } = require("@saltcorn/data/db/state");
-const { a, div, script, domReady, style } = require("@saltcorn/markup/tags");
+const {
+  a,
+  div,
+  script,
+  domReady,
+  style,
+  input,
+  text_attr,
+} = require("@saltcorn/markup/tags");
 
 module.exports = {
   name: "SharedFileLink",
@@ -21,19 +29,28 @@ module.exports = {
         return a({ href: file_url_prefix + v }, v);
       },
     },
-    editHTML: {
+    edit: {
       isEdit: true,
-      run: (nm, v, attrs, cls) =>
-        /*textarea(
-          {
-            class: ["form-control", cls],
-            name: text(nm),
-            id: `input${text(nm)}`,
-            rows: 10,
-          },
-          xss(v || "")
-        ),*/
-        "",
+      run: (nm, v, attrs, cls, required, field) => {
+        const { browser } = attrs;
+        const browser_view = getState().views.find((v) => v.name === browser);
+
+        if (!browser_view)
+          throw new Error(`SharedFileLink: browser view ${browser} not found`);
+        const { base_server_dir, file_url_prefix, show_hidden } =
+          browser_view.configuration;
+        return input({
+          type: "text",
+          disabled: attrs.disabled,
+          class: ["form-control", cls],
+          readonly: "readonly",
+          "data-fieldname": text_attr(field.name),
+          name: text_attr(nm),
+          onFocus: `sharedLinkSelect('${nm}', '${browser}')`,
+          id: `input${text_attr(nm)}`,
+          value: text_attr(v || ""),
+        });
+      },
     },
   },
   attributes: () => {
