@@ -89,11 +89,11 @@ const get_directory = async (
       size: stat.size,
       ctime: stat.ctime,
       link: isDirectory
-        ? `javascript:switch_to_dir('${body.id}', '${viewname}', '/${path.join(
+        ? `javascript:switch_to_dir('${body.id}', '${viewname}', '${path.join(
             safeDir,
             name
           )}');`
-        : file_url_prefix + safeDir + name,
+        : path.join(file_url_prefix, safeDir, name),
     });
   }
   return { json: { success: files } };
