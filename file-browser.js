@@ -65,11 +65,18 @@ const get_directory = async (
   const files = [];
   for (const name of fileNms) {
     const stat = await fs.stat(path.join(dir, name));
+    const isDirectory = stat.isDirectory();
     files.push({
       name,
-      isDirectory: stat.isDirectory(),
+      isDirectory,
       size: stat.size,
       ctime: stat.ctime,
+      link: isDirectory
+        ? `javascript:switch_to_dir('${body.id}', '${viewname}', '/${path.join(
+            safeDir,
+            name
+          )}');`
+        : file_url_prefix + safeDir + name,
     });
   }
   return { json: { success: files } };
