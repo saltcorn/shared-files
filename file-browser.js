@@ -5,7 +5,7 @@ const View = require("@saltcorn/data/models/view");
 const db = require("@saltcorn/data/db");
 const Workflow = require("@saltcorn/data/models/workflow");
 const { renderForm } = require("@saltcorn/markup");
-const { div, script, domReady } = require("@saltcorn/markup/tags");
+const { div, script, domReady, style } = require("@saltcorn/markup/tags");
 const fs = require("fs").promises;
 const path = require("path");
 
@@ -52,7 +52,8 @@ const run = async (
 
   return (
     div({ id: rndid }) +
-    script(domReady(`switch_to_dir("${rndid}", "${viewname}", "/")`))
+    script(domReady(`switch_to_dir("${rndid}", "${viewname}", "/")`)) +
+    style(`#${rndid} td a {width: 100%;display: block;}`)
   );
 };
 

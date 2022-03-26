@@ -11,7 +11,7 @@ function file_row({ name, size, ctime, isDirectory, link }) {
   }</td><td>${ctime}</td><td>${size}</td></tr>`;
 }
 function draw_shared_files(e, dir) {
-  e.html(`<table><thead>
+  e.html(`<table class="table table-sm"><thead>
   <tr>
       <th scope="col"></th>
       <th scope="col">Name</th>
