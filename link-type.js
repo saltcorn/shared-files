@@ -25,7 +25,6 @@ module.exports = {
         const { base_server_dir, file_url_prefix, show_hidden } =
           browser_view.configuration;
 
-        console.log({ browser_view });
         return a({ href: file_url_prefix + v }, v);
       },
     },
