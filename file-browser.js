@@ -75,6 +75,12 @@ const get_directory = async (
   const dir = path.join(base_server_dir, safeDir);
   const fileNms = await fs.readdir(dir);
   const files = [];
+  const breadcrumbs = [
+    {
+      name: "Base",
+      link: `javascript:switch_to_dir('${body.id}', '${viewname}', '/', '${_select}');`,
+    },
+  ];
   if (safeDir !== "/")
     files.push({
       name: "..",
@@ -85,6 +91,23 @@ const get_directory = async (
         body.id
       }', '${viewname}', '/${path.join(safeDir, "..")}');`,
     });
+  const dirs = safeDir.split("/");
+
+  dirs.forEach((dir, ix) => {
+    if (dir) {
+      if (ix === dirs.length - 1) {
+        breadcrumbs.push({
+          name: dir,
+        });
+      } else {
+        const pth = path.join(...dirs.slice(0, ix + 1));
+        breadcrumbs.push({
+          name: dir,
+          link: `javascript:switch_to_dir('${body.id}', '${viewname}', '/${pth}', '${_select}');`,
+        });
+      }
+    }
+  });
   for (const name of fileNms) {
     if (name.startsWith(".") && !show_hidden) continue;
     const stat = await fs.stat(path.join(dir, name));
@@ -107,7 +130,7 @@ const get_directory = async (
         : path.join(file_url_prefix, safeDir, name),
     });
   }
-  return { json: { success: files } };
+  return { json: { files, breadcrumbs } };
 
   //return { json: { error: "Form incomplete" } };
 };
