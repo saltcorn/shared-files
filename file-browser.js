@@ -34,6 +34,12 @@ const configuration_workflow = () =>
                 label: "Show hidden files",
                 type: "Bool",
               },
+              {
+                name: "shared_drive_name",
+                label: "Name of shared drive",
+                sublabel: "Name of root folder shown to user",
+                type: "String",
+              },
             ],
           });
         },
@@ -44,7 +50,7 @@ const configuration_workflow = () =>
 const run = async (
   table_id,
   viewname,
-  { base_server_dir, file_url_prefix },
+  { base_server_dir, file_url_prefix, shared_drive_name },
   state,
   { res, req }
 ) => {
@@ -66,7 +72,7 @@ const run = async (
 const get_directory = async (
   table_id,
   viewname,
-  { base_server_dir, file_url_prefix, show_hidden },
+  { base_server_dir, file_url_prefix, show_hidden, shared_drive_name },
   body,
   { req }
 ) => {
@@ -77,7 +83,7 @@ const get_directory = async (
   const files = [];
   const breadcrumbs = [
     {
-      name: "Base",
+      name: shared_drive_name || "Base",
       link: `javascript:switch_to_dir('${body.id}', '${viewname}', '/', '${_select}');`,
     },
   ];
