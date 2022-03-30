@@ -45,7 +45,7 @@ module.exports = {
           readonly: "readonly",
           "data-fieldname": text_attr(field.name),
           name: text_attr(nm),
-          onFocus: `sharedLinkSelect('${nm}', '${browser}')`,
+          onFocus: `sharedLinkSelect('${nm}', '${browser}', this)`,
           id: `input${text_attr(nm)}`,
           value: text_attr(v || ""),
         });

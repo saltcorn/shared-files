@@ -38,12 +38,24 @@ function switch_to_dir(id, viewname, dir, _select) {
   });
 }
 
-function sharedLinkSelect(nm, viewname) {
-  ajax_modal(`/view/${viewname}?_select=${nm}`);
+function sharedLinkSelect(nm, viewname, e) {
+  const inModal = $(e).closest("#scmodal").length > 0;
+  const url = `/view/${viewname}?_select=${nm}`;
+  if (inModal) {
+    $(e).after(`<div id="selectfile${nm}"></div>`);
+    $.ajax(url, {
+      success: function (res, textStatus, request) {
+        $(`#selectfile${nm}`).html(res);
+      },
+    });
+  } else ajax_modal(url);
 }
 function select_shared_link(val, nm) {
   $(`#input${nm}`).val(val);
-  var myModalEl = document.getElementById("scmodal");
-  var modal = bootstrap.Modal.getInstance(myModalEl);
-  modal.hide();
+  const inModal = $(`#input${nm}`).closest("#scmodal").length > 0;
+  if (!inModal) {
+    var myModalEl = document.getElementById("scmodal");
+    var modal = bootstrap.Modal.getInstance(myModalEl);
+    modal.hide();
+  } else $(`#selectfile${nm}`).remove();
 }
