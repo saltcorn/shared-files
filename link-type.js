@@ -28,6 +28,20 @@ module.exports = {
         return a({ href: file_url_prefix + v }, v);
       },
     },
+    show_image: {
+      isEdit: false,
+      run: (v, req, { browser }) => {
+        if (!v) return "";
+        const browser_view = getState().views.find((v) => v.name === browser);
+
+        if (!browser_view)
+          throw new Error(`SharedFileLink: browser view ${browser} not found`);
+        const { base_server_dir, file_url_prefix, show_hidden } =
+          browser_view.configuration;
+
+        return img({ src: file_url_prefix + v });
+      },
+    },
     edit: {
       isEdit: true,
       run: (nm, v, attrs, cls, required, field) => {
