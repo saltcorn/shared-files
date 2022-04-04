@@ -42,7 +42,8 @@ function sharedLinkSelect(nm, viewname, e) {
   const inModal = $(e).closest("#scmodal").length > 0;
   const url = `/view/${viewname}?_select=${nm}`;
   if (inModal) {
-    $(e).after(`<div id="selectfile${nm}"></div>`);
+    if ($(`#selectfile${nm}`).length === 0)
+      $(e).after(`<div id="selectfile${nm}"></div>`);
     $.ajax(url, {
       success: function (res, textStatus, request) {
         $(`#selectfile${nm}`).html(res);
