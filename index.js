@@ -4,7 +4,7 @@ module.exports = {
   viewtemplates: [require("./file-browser.js")],
   headers: [
     {
-      script: "/plugins/public/shared-files@0.1.2/shared-files-client.js",
+      script: "/plugins/public/shared-files@0.1.5/shared-files-client.js",
     },
   ],
   types: [require("./link-type.js")],
