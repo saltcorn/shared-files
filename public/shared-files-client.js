@@ -9,13 +9,33 @@ function switch_to_dir(id, viewname, dir, _select, file_type) {
   function file_row({ name, size, ctime, isDirectory, link, selectBtn }) {
     return `<tr><td>${icon(name, isDirectory)}</td><td>${
       link ? `<a href="${link}">${name}</a>` : name
-    }</td><td>${ctime}</td><td>${size}</td><td>${
+    }</td><td>${new Date(ctime).toLocaleString(
+      window.detected_locale
+    )}</td><td>${size}</td><td>${
       selectBtn
         ? `<button type="button" class="btn btn-secondary btn-sm btn-xs" onclick="${selectBtn}">Select</button>`
         : ""
     }</td></tr>`;
   }
-  function draw_shared_files(e, files, breadcrumbs) {
+  function draw_shared_files(e, filesUnsorted, breadcrumbs) {
+    const sortGetter =
+      sort_shared_files_by === "Name"
+        ? (o) => o.name
+        : sort_shared_files_by === "Date"
+        ? (o) => new Date(o.ctime)
+        : (o) => o.size;
+    function compare(a, b) {
+      const aval = sortGetter(a),
+        bval = sortGetter(b);
+      if (aval < bval) {
+        return sort_shared_files_desc ? 1 : -1;
+      }
+      if (aval > bval) {
+        return sort_shared_files_desc ? -1 : 1;
+      }
+      return 0;
+    }
+    const files = filesUnsorted.sort(compare);
     e.html(`<div class="d-flex justify-content-between">
     <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -37,9 +57,20 @@ function switch_to_dir(id, viewname, dir, _select, file_type) {
   <table class="table table-sm"><thead>
   <tr>
       <th scope="col"></th>
-      <th scope="col">Name</th>
-      <th scope="col">Date</th>
-      <th scope="col">Size</th>
+      ${["Name", "Date", "Size"]
+        .map(
+          (k) =>
+            `<th scope="col"><a href="javascript:sort_shared_files('${k}', '${id}', '${viewname}', '${dir}', '${_select}', '${file_type}')">${
+              sort_shared_files_by === k
+                ? `<b>${k}</b>${
+                    sort_shared_files_desc
+                      ? `<i class="fas fa-caret-down"></i>`
+                      : `<i class="fas fa-caret-up"></i>`
+                  }`
+                : k
+            }</a></th>`
+        )
+        .join("")}      
       <th scope="col"></th>
     </tr>
     </thead><tbody>${files.map(file_row).join("")}</tbody></table>`);
@@ -53,6 +84,16 @@ function switch_to_dir(id, viewname, dir, _select, file_type) {
       draw_shared_files($("#" + id), res.files || [], res.breadcrumbs || []);
     }
   );
+}
+
+let sort_shared_files_by = "Name";
+let sort_shared_files_desc;
+
+function sort_shared_files(byWhat, id, viewname, dir, _select, file_type) {
+  if (byWhat == sort_shared_files_by)
+    sort_shared_files_desc = !sort_shared_files_desc;
+  sort_shared_files_by = byWhat;
+  switch_to_dir(id, viewname, dir, _select, file_type);
 }
 
 function sharedLinkSelect(nm, viewname, e, file_type) {
