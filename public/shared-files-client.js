@@ -12,7 +12,8 @@ function switch_to_dir(id, viewname, dir, _select) {
     }</td><td>${ctime}</td><td>${size}</td></tr>`;
   }
   function draw_shared_files(e, files, breadcrumbs) {
-    e.html(`<nav aria-label="breadcrumb">
+    e.html(`<div class="d-flex justify-content-between">
+    <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       ${breadcrumbs
         .map((b) =>
@@ -23,6 +24,12 @@ function switch_to_dir(id, viewname, dir, _select) {
         .join("")}      
     </ol>
   </nav>
+  ${
+    _select
+      ? `<a href="javascript:select_shared_link(null, '${_select}');">Select none</a>`
+      : ""
+  }
+  </div>
   <table class="table table-sm"><thead>
   <tr>
       <th scope="col"></th>
