@@ -44,6 +44,16 @@ module.exports = {
     },
     edit: {
       isEdit: true,
+      configFields: () => [
+        {
+          name: "file_type",
+          label: "File type",
+          type: "String",
+          attributes: {
+            options: ["Only files", "Only folders", "Files and folders"],
+          },
+        },
+      ],
       run: (nm, v, attrs, cls, required, field) => {
         const { browser } = attrs;
         const browser_view = getState().views.find((v) => v.name === browser);
@@ -59,7 +69,9 @@ module.exports = {
           readonly: "readonly",
           "data-fieldname": text_attr(field.name),
           name: text_attr(nm),
-          onFocus: `sharedLinkSelect('${nm}', '${browser}', this)`,
+          onFocus: `sharedLinkSelect('${nm}', '${browser}', this, '${
+            attrs?.file_type || "Only files"
+          }')`,
           id: `input${text_attr(nm)}`,
           value: text_attr(v || ""),
         });

@@ -1,4 +1,4 @@
-function switch_to_dir(id, viewname, dir, _select) {
+function switch_to_dir(id, viewname, dir, _select, file_type) {
   function icon(name, isDirectory) {
     if (isDirectory) return `<i class="fas fa-folder"></i>`;
 
@@ -6,10 +6,14 @@ function switch_to_dir(id, viewname, dir, _select) {
     return `<i class="fas fa-file"></i>`;
   }
 
-  function file_row({ name, size, ctime, isDirectory, link }) {
+  function file_row({ name, size, ctime, isDirectory, link, selectBtn }) {
     return `<tr><td>${icon(name, isDirectory)}</td><td>${
       link ? `<a href="${link}">${name}</a>` : name
-    }</td><td>${ctime}</td><td>${size}</td></tr>`;
+    }</td><td>${ctime}</td><td>${size}</td><td>${
+      selectBtn
+        ? `<button type="button" class="btn btn-secondary btn-sm btn-xs" onclick="${selectBtn}">Select</button>`
+        : ""
+    }</td></tr>`;
   }
   function draw_shared_files(e, files, breadcrumbs) {
     e.html(`<div class="d-flex justify-content-between">
@@ -36,18 +40,26 @@ function switch_to_dir(id, viewname, dir, _select) {
       <th scope="col">Name</th>
       <th scope="col">Date</th>
       <th scope="col">Size</th>
+      <th scope="col"></th>
     </tr>
     </thead><tbody>${files.map(file_row).join("")}</tbody></table>`);
   }
 
-  view_post(viewname, "get_directory", { dir, id, _select }, (res) => {
-    draw_shared_files($("#" + id), res.files || [], res.breadcrumbs || []);
-  });
+  view_post(
+    viewname,
+    "get_directory",
+    { dir, id, _select, file_type },
+    (res) => {
+      draw_shared_files($("#" + id), res.files || [], res.breadcrumbs || []);
+    }
+  );
 }
 
-function sharedLinkSelect(nm, viewname, e) {
+function sharedLinkSelect(nm, viewname, e, file_type) {
   const inModal = $(e).closest("#scmodal").length > 0;
-  const url = `/view/${viewname}?_select=${nm}`;
+  const url = `/view/${viewname}?_select=${nm}&file_type=${encodeURIComponent(
+    file_type || "Only files"
+  )}`;
   if (inModal) {
     if ($(`#selectfile${nm}`).length === 0)
       $(e).after(`<div id="selectfile${nm}"></div>`);

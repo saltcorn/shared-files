@@ -62,7 +62,7 @@ const run = async (
       domReady(
         `switch_to_dir("${rndid}", "${viewname}", "/", "${
           req.query._select || ""
-        }")`
+        }", '${req.query.file_type}')`
       )
     ) +
     style(`#${rndid} td a {width: 100%;display: block;}`)
@@ -77,6 +77,11 @@ const get_directory = async (
   { req }
 ) => {
   const _select = body._select;
+  const file_type = body.file_type;
+  const select_dirs =
+    _select && ["Only folders", "Files and folders"].includes(file_type);
+  const select_files =
+    _select && ["Only files", "Files and folders"].includes(file_type);
   const safeDir = path.normalize(body.dir).replace(/^(\.\.(\/|\\|$))+/, "");
   const dir = path.join(base_server_dir, safeDir);
   const fileNms = await fs.readdir(dir);
@@ -84,7 +89,7 @@ const get_directory = async (
   const breadcrumbs = [
     {
       name: shared_drive_name || "Base",
-      link: `javascript:switch_to_dir('${body.id}', '${viewname}', '/', '${_select}');`,
+      link: `javascript:switch_to_dir('${body.id}', '${viewname}', '/', '${_select}', '${file_type}');`,
     },
   ];
   if (safeDir !== "/")
@@ -95,7 +100,10 @@ const get_directory = async (
       ctime: "",
       link: `javascript:switch_to_dir('${
         body.id
-      }', '${viewname}', '/${path.join(safeDir, "..")}');`,
+      }', '${viewname}', '/${path.join(
+        safeDir,
+        ".."
+      )}', '${_select}', '${file_type}');`,
     });
   const dirs = safeDir.split("/");
 
@@ -109,7 +117,7 @@ const get_directory = async (
         const pth = path.join(...dirs.slice(0, ix + 1));
         breadcrumbs.push({
           name: dir,
-          link: `javascript:switch_to_dir('${body.id}', '${viewname}', '/${pth}', '${_select}');`,
+          link: `javascript:switch_to_dir('${body.id}', '${viewname}', '/${pth}', '${_select}', '${file_type}');`,
         });
       }
     }
@@ -123,19 +131,26 @@ const get_directory = async (
       isDirectory,
       size: stat.size,
       ctime: stat.ctime,
+      selectBtn:
+        isDirectory &&
+        select_dirs &&
+        `select_shared_link('${path.join(safeDir, name)}/', '${_select}');`,
       link: isDirectory
         ? `javascript:switch_to_dir('${body.id}', '${viewname}', '${path.join(
             safeDir,
             name
-          )}', '${_select}');`
-        : _select
+          )}', '${_select}', '${file_type}');`
+        : _select && select_files
         ? `javascript:select_shared_link('${path.join(
             safeDir,
             name
           )}', '${_select}');`
+        : _select && !select_files
+        ? ""
         : path.join(file_url_prefix, safeDir, name),
     });
   }
+  //console.log(files);
   return { json: { files, breadcrumbs } };
 
   //return { json: { error: "Form incomplete" } };
