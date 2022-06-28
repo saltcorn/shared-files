@@ -50,7 +50,7 @@ function switch_to_dir(id, viewname, dir, _select, file_type) {
   </nav>
   ${
     _select
-      ? `<a href="javascript:select_shared_link(null, '${_select}');">Select none</a>`
+      ? `<div><button type="button" class="btn btn-primary" onclick="select_shared_link(null, '${_select}');">Clear</button></div>`
       : ""
   }
   </div>
