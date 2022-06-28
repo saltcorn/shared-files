@@ -1,6 +1,6 @@
 {
   "name": "@saltcorn/shared-files",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Browser and links to shared files",
   "main": "index.js",
   "dependencies": {
