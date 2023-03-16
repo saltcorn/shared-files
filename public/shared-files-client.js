@@ -151,3 +151,9 @@ function select_shared_link(val, nm) {
     modal.hide();
   } else $(`#selectfile${nm}`).remove();
 }
+
+function manual_edit_shared_link(id) {
+  const $id = $("#" + id);
+  const newval = window.prompt("Enter new path", $id.val());
+  if (newval) $id.val(newval);
+}

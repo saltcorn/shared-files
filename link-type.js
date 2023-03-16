@@ -6,7 +6,9 @@ const {
   script,
   domReady,
   style,
+  i,
   input,
+  button,
   text_attr,
 } = require("@saltcorn/markup/tags");
 const path = require("path");
@@ -75,9 +77,7 @@ module.exports = {
         const { base_server_dir, file_url_prefix, show_hidden } =
           browser_view.configuration;
         const start_path = v ? path.dirname(v) : attrs?.start_path || "/";
-        if (attrs?.editable) {
-        }
-        return input({
+        const main_input = input({
           type: "text",
           disabled: attrs.disabled,
           class: ["form-control", cls],
@@ -90,6 +90,21 @@ module.exports = {
           id: `input${text_attr(nm)}`,
           value: text_attr(v || ""),
         });
+        if (attrs?.editable) {
+          return div(
+            { class: "input-group" },
+            main_input,
+            button(
+              {
+                class: "btn btn-sm btn-outline-secondary",
+                onclick: `manual_edit_shared_link('input${text_attr(nm)}')`,
+                type: "button",
+              },
+              i({ class: "far fa-edit" })
+            )
+          );
+        }
+        return main_input;
       },
     },
   },
