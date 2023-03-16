@@ -95,10 +95,41 @@ function sort_shared_files(byWhat, id, viewname, dir, _select, file_type) {
   sort_shared_files_by = byWhat;
   switch_to_dir(id, viewname, dir, _select, file_type);
 }
+//https://gist.github.com/creationix/7435851
+
+// A simple function to get the dirname of a path
+// Trailing slashes are ignored. Leading slash is preserved.
+function dirname(path) {
+  function join(/* path segments */) {
+    // Split the inputs into a list of path commands.
+    var parts = [];
+    for (var i = 0, l = arguments.length; i < l; i++) {
+      parts = parts.concat(arguments[i].split("/"));
+    }
+    // Interpret the path commands to get the new resolved path.
+    var newParts = [];
+    for (i = 0, l = parts.length; i < l; i++) {
+      var part = parts[i];
+      // Remove leading and trailing slashes
+      // Also remove "." segments
+      if (!part || part === ".") continue;
+      // Interpret ".." to pop the last segment
+      if (part === "..") newParts.pop();
+      // Push new path segments.
+      else newParts.push(part);
+    }
+    // Preserve the initial slash if there was one.
+    if (parts[0] === "") newParts.unshift("");
+    // Turn back into a single string path.
+    return newParts.join("/") || (newParts.length ? "/" : ".");
+  }
+  return join(path, "..");
+}
 
 function sharedLinkSelect(nm, viewname, e, file_type, start_path) {
   const inModal = $(e).closest("#scmodal").length > 0;
-  const url = `/view/${viewname}?_select=${nm}&dir=${start_path}&file_type=${encodeURIComponent(
+  const curdir = $(e).val() ? dirname($(e).val()) : start_path;
+  const url = `/view/${viewname}?_select=${nm}&dir=${curdir}&file_type=${encodeURIComponent(
     file_type || "Only files"
   )}`;
   if (inModal) {
