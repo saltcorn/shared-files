@@ -55,12 +55,12 @@ const run = async (
   { res, req }
 ) => {
   const rndid = `fb${Math.floor(Math.random() * 16777215).toString(16)}`;
-
+  const dir = state.dir || "/";
   return (
     div({ id: rndid }) +
     script(
       domReady(
-        `switch_to_dir("${rndid}", "${viewname}", "/", "${
+        `switch_to_dir("${rndid}", "${viewname}", "${dir}", "${
           req.query._select || ""
         }", '${req.query.file_type}')`
       )

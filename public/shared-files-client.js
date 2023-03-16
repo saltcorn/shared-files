@@ -96,9 +96,9 @@ function sort_shared_files(byWhat, id, viewname, dir, _select, file_type) {
   switch_to_dir(id, viewname, dir, _select, file_type);
 }
 
-function sharedLinkSelect(nm, viewname, e, file_type) {
+function sharedLinkSelect(nm, viewname, e, file_type, start_path) {
   const inModal = $(e).closest("#scmodal").length > 0;
-  const url = `/view/${viewname}?_select=${nm}&file_type=${encodeURIComponent(
+  const url = `/view/${viewname}?_select=${nm}&dir=${start_path}&file_type=${encodeURIComponent(
     file_type || "Only files"
   )}`;
   if (inModal) {

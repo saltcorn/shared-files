@@ -9,6 +9,7 @@ const {
   input,
   text_attr,
 } = require("@saltcorn/markup/tags");
+const path = require("path");
 
 module.exports = {
   name: "SharedFileLink",
@@ -53,6 +54,17 @@ module.exports = {
             options: ["Only files", "Only folders", "Files and folders"],
           },
         },
+        {
+          name: "start_path",
+          label: "Start path",
+          type: "String",
+        },
+        {
+          name: "editable",
+          label: "Manual edit",
+          sublabel: "allow user to manually enter or edit a path",
+          type: "Bool",
+        },
       ],
       run: (nm, v, attrs, cls, required, field) => {
         const { browser } = attrs;
@@ -62,6 +74,9 @@ module.exports = {
           throw new Error(`SharedFileLink: browser view ${browser} not found`);
         const { base_server_dir, file_url_prefix, show_hidden } =
           browser_view.configuration;
+        const start_path = v ? path.dirname(v) : attrs?.start_path || "/";
+        if (attrs?.editable) {
+        }
         return input({
           type: "text",
           disabled: attrs.disabled,
@@ -71,7 +86,7 @@ module.exports = {
           name: text_attr(nm),
           onFocus: `sharedLinkSelect('${nm}', '${browser}', this, '${
             attrs?.file_type || "Only files"
-          }')`,
+          }', '${start_path}')`,
           id: `input${text_attr(nm)}`,
           value: text_attr(v || ""),
         });
