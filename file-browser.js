@@ -55,7 +55,7 @@ const run = async (
   { res, req }
 ) => {
   const rndid = `fb${Math.floor(Math.random() * 16777215).toString(16)}`;
-  const dir = state.dir || "/";
+  const dir = state.dir ? decodeURIComponent(state.dir) : "/";
   return (
     div({ id: rndid }) +
     script(

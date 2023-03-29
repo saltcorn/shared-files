@@ -129,9 +129,9 @@ function dirname(path) {
 function sharedLinkSelect(nm, viewname, e, file_type, start_path) {
   const inModal = $(e).closest("#scmodal").length > 0;
   const curdir = $(e).val() ? dirname($(e).val()) : start_path;
-  const url = `/view/${viewname}?_select=${nm}&dir=${curdir}&file_type=${encodeURIComponent(
-    file_type || "Only files"
-  )}`;
+  const url = `/view/${viewname}?_select=${nm}&dir=${encodeURIComponent(
+    curdir
+  )}&file_type=${encodeURIComponent(file_type || "Only files")}`;
   if (inModal) {
     if ($(`#selectfile${nm}`).length === 0)
       $(e).after(`<div id="selectfile${nm}"></div>`);
