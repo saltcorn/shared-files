@@ -10,6 +10,7 @@ const {
   input,
   button,
   text_attr,
+  img,
 } = require("@saltcorn/markup/tags");
 const path = require("path");
 
